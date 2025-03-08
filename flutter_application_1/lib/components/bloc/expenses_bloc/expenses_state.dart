@@ -19,6 +19,13 @@ class ExpensesErrorState extends ExpensesActionState {}
 class ExpensesImageProcessingState extends ExpensesActionState {}
 
 class ExpenseImageProcessedState extends ExpensesActionState {
-  List<ExpenseModel> expenses;
+  List<Map<String,dynamic>> expenses;
   ExpenseImageProcessedState(this.expenses);
+}
+
+class ExpensePdfProcessingState extends ExpensesActionState {}
+
+class ExpensePdfProcessedState extends ExpensesActionState {
+  List<Map<String,dynamic>> expenses;
+  ExpensePdfProcessedState(this.expenses);
 }
