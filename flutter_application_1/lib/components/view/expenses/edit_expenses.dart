@@ -94,12 +94,31 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
           const SizedBox(height: 20),
           const Text("Items", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return itemRow(index);
-              },
+            child: Column(
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return itemRow(index);
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      items.add({
+                        "title": "",
+                        "amountSpent": 0.0,
+                      });
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  child: const Text("Add Item", style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
           ),
           isSaving
@@ -112,14 +131,18 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
           ElevatedButton(
             onPressed: () {
               if (true) {
+                for (int i=0;i<items.length;i++) {
+                  items[i] = {
+                    "title": items[i]['title'],
+                    "amount_spent": items[i]['amountSpent'],
+                  };
+                }
                 Map<String,dynamic> expenseData = {
-                  "expenseTitle": expenseTitleController.text,
-                  "merchantName": merchantNameController.text,
-                  "totalAmount": double.parse(totalAmountController.text),
-                  "paymentMethod": paymentMethodController.text,
-                  "date": selectedDate != null
-                      ? DateFormat("yyyy-MM-dd").format(selectedDate!)
-                      : "",
+                  "expense_title": expenseTitleController.text,
+                  "merchant_name": merchantNameController.text,
+                  "amount_spent": double.parse(totalAmountController.text),
+                  "payment_method": paymentMethodController.text,
+                  "date": dateController.text.trim(),
                   "category": selectedCategory,
                   "items": items,
                 };

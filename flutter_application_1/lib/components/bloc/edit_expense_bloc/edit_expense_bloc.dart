@@ -14,6 +14,7 @@ class EditExpenseBloc extends Bloc<EditExpenseEvent, EditExpenseState> {
   FutureOr<void> editExpenseSaveEvent(EditExpenseSaveEvent event, Emitter<EditExpenseState> emit) {
     emit(EditExpenseSavingState());
     Map<String,dynamic> expense = event.expense;
+    print(expense);
     // do api call here
     emit(EditExpenseSavedState());
   }
