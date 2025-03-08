@@ -76,3 +76,24 @@ Future<List<Map<String,dynamic>>> getExpenses() async {
     }
     return [];
 }
+
+Future<String> getChatBotResponse(String message) async {
+  try {
+    var response = await http.post(
+      Uri.parse("${AppValues.ip}botQuery"),
+      body: {"botQuery": message},
+    );
+    var decodedResponse = jsonDecode(response.body);
+    if (decodedResponse["status"] == 200) {
+      return jsonDecode(response.body)["answer"];
+    } 
+    else if(decodedResponse["status"] == 404){
+      return decodedResponse["message"];
+    }
+    else {
+      return "Error: ${response.statusCode} - ${response.body}";
+    }
+  } catch (e) {
+    return "Error: $e";
+  }
+}
