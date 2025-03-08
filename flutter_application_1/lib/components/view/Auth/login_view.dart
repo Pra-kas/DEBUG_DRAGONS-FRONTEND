@@ -198,12 +198,18 @@ class LoginPage extends StatelessWidget {
   }
 
   Future<void> _handleGoogleSignIn(BuildContext context) async {
-
-    // TODO: Implement actual Google Sign In
-    // You would use a package like firebase_auth and google_sign_in
-    // Example implementation:
-    //
+    GoogleSignIn _googleSignIn = GoogleSignIn();
     try {
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+        await FirebaseAuth.instance.signOut();
+
+        try {
+          await _googleSignIn.disconnect();
+        } catch (e, stackTrace) {
+          print("Error during disconnect: $e");
+        }
+      }
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
       final credential = GoogleAuthProvider.credential(

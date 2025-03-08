@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/models/user_model.dart';
 import 'package:flutter_application_1/components/view/analytics/analytics_view.dart';
 import 'package:flutter_application_1/components/view/expenses/expenses_view.dart';
 import 'package:flutter_application_1/components/view/settings/settings.dart';
@@ -33,8 +35,19 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    getUserDetails();
     getFirebaseNotification();
     super.initState();
+  }
+
+  Future<void> getUserDetails() async {
+    print("name from firebase : ${FirebaseAuth.instance.currentUser!.displayName!}");
+    if (UserModel.name.isEmpty) {
+      UserModel.name = FirebaseAuth.instance.currentUser!.displayName!;
+      UserModel.email = FirebaseAuth.instance.currentUser!.email!;
+      UserModel.photoUrl = FirebaseAuth.instance.currentUser!.photoURL!;
+      UserModel.phone = FirebaseAuth.instance.currentUser!.phoneNumber!;
+    }
   }
 
   Future<void> getFirebaseNotification() async {

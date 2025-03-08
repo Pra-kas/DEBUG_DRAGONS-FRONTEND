@@ -1,4 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/models/user_model.dart';
+import 'package:flutter_application_1/data/appvalues.dart';
+
+import '../Auth/login_view.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,11 +16,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   // Mock user data - replace with actual user data from your app
   final Map<String, dynamic> userData = {
-    'name': 'Gopinath S',
-    'email': 'gopinath.s2022cce@sece.ac.in',
-    'phone': '9344751909',
+    'name': UserModel.name.isNotEmpty ? UserModel.name : "Not provided",
+    'email': UserModel.email.isNotEmpty ? UserModel.email : "Not provided",
+    'phone': UserModel.phone.isNotEmpty ? UserModel.phone : "Not provided",
     'accountType': 'Premium',
-    'profilePicture': 'https://th.bing.com/th/id/OIP._es0XdTFgRtnSNs1-5gs4QHaH0?rs=1&pid=ImgDetMain',
+    'profilePicture': UserModel.photoUrl,
   };
 
   @override
@@ -208,9 +214,18 @@ class _ProfilePageState extends State<ProfilePage> {
               )),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Implement your logout logic here
-                Navigator.of(context).pop();
+                await FirebaseAuth.instance.signOut();
+                AppValues.jwtToken = "";
+                UserModel.phone = "";
+                UserModel.email = "";
+                UserModel.name = "";
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                      (Route<dynamic> route) => false,
+                );
                 // You might want to navigate to login page or clear user session
               },
               style: ElevatedButton.styleFrom(
