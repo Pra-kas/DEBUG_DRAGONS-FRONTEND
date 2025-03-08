@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_application_1/components/models/expense_model.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_application_1/service/upload_bill.dart';
+import 'package:image_picker/image_picker.dart';
 
 part 'expenses_event.dart';
 part 'expenses_state.dart';
@@ -10,6 +11,7 @@ part 'expenses_state.dart';
 class ExpensesBloc extends Bloc<ExpensesEvent, ExpensesState> {
   ExpensesBloc() : super(ExpensesInitial()) {
     on<ExpensesInitialEvent> (expensesInitialEvent);
+    on<ExpenseImagePickedEvent>(expenseImagePickedEvent);
   }
 
   List<Map<String,dynamic>> expenseList = [
@@ -94,6 +96,12 @@ class ExpensesBloc extends Bloc<ExpensesEvent, ExpensesState> {
       "merchant_name": "Flipkart"
     }
   ];
+
+  Future<void> expenseImagePickedEvent(ExpenseImagePickedEvent event, Emitter<ExpensesState> emit)async{
+    emit(ExpensesImageProcessingState());
+    await uploadBill(event.image);
+    emit(ExpenseImageProcessedState([]));
+  }
 
   Future<void> expensesInitialEvent(ExpensesInitialEvent event, Emitter<ExpensesState> emit) async {
     emit(ExpensesLoadingState());
