@@ -4,5 +4,5 @@ abstract class EditExpenseEvent {}
 
 class EditExpenseSaveEvent extends EditExpenseEvent {
   final Map<String,dynamic> expense;
-  EditExpenseSaveEvent(this.expense);
+  EditExpenseSaveEvent({required this.expense});
 }

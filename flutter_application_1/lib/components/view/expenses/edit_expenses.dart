@@ -112,7 +112,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
           ElevatedButton(
             onPressed: () {
               if (true) {
-                final expenseData = {
+                Map<String,dynamic> expenseData = {
                   "expenseTitle": expenseTitleController.text,
                   "merchantName": merchantNameController.text,
                   "totalAmount": double.parse(totalAmountController.text),
@@ -125,7 +125,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                 };
 
                 if (widget.isEdit) {
-                  
+                  editExpenseBloc.add(EditExpenseSaveEvent(expense : expenseData));
                 } else {
                   // Add new expense
                 }
