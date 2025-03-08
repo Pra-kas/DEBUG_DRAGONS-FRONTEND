@@ -1,18 +1,30 @@
 part of 'analytics_bloc_bloc.dart';
 
 @immutable
-sealed class AnalyticsBlocState {}
+abstract class AnalyticsBlocState {}
 
-final class AnalyticsBlocInitial extends AnalyticsBlocState {}
+class AnalyticsBlocInitial extends AnalyticsBlocState {}
 
 class AnalyticsLoadingState extends AnalyticsBlocState {}
 
 class AnalyticsLoadedState extends AnalyticsBlocState {
-  List<int>xList;
-  List<int>yList;
-  String xTitle;
-  String yTitle;
-  AnalyticsLoadedState(this.xList, this.yList, this.xTitle, this.yTitle);
-}
+  final List<int> xList;
+  final List<int> yList;
+  final String xTitle;
+  final String yTitle;
+  final Map<int, List<int>> weeklyData;
+  final Map<int, List<int>> weeklyExpense;
+  final Map<int, List<int>> weeklyIncome;
+  final int selectedMonth;
 
-class AnalyticsLoadFailedState extends AnalyticsBlocState {}
+  AnalyticsLoadedState({
+    required this.xList,
+    required this.yList,
+    required this.xTitle,
+    required this.yTitle,
+    required this.weeklyData,
+    required this.weeklyExpense,
+    required this.weeklyIncome,
+    required this.selectedMonth
+  });
+}

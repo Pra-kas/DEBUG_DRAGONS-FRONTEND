@@ -37,6 +37,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
   @override
   void initState() {
     super.initState();
+    print("AMount spent : ${widget.expenseData["date_time"]}");
     if (widget.isEdit) {
       expenseTitleController =
           TextEditingController(text: widget.expenseData["expense_title"] ?? "");
@@ -44,9 +45,9 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
       paymentMethodController = TextEditingController(text: widget.expenseData["payment_method"] ?? "");
       merchantNameController = TextEditingController(text: widget.expenseData["merchant_name"] ?? "");
       totalAmountController = TextEditingController(text: widget.expenseData["amount_spent"].toString() ?? "");
-      dateController = TextEditingController(text: widget.expenseData["date"] ?? "");
-      selectedDate = widget.expenseData["date"] != null
-          ? DateTime.tryParse(widget.expenseData["date"])
+      dateController = TextEditingController(text: widget.expenseData["date_time"] ?? "");
+      selectedDate = widget.expenseData["date_time"] != null
+          ? DateTime.tryParse(widget.expenseData["date_time"])
           : null;
       print("tags from josn : ${widget.expenseData["tags"]}");
       items = List<Map<String, dynamic>>.from(widget.expenseData["items"] ?? []);
@@ -108,7 +109,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                     setState(() {
                       items.add({
                         "title": "",
-                        "amountSpent": 0.0,
+                        "amount_spent": 0.0,
                       });
                     });
                   },
@@ -134,7 +135,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                 for (int i=0;i<items.length;i++) {
                   items[i] = {
                     "title": items[i]['title'],
-                    "amount_spent": items[i]['amountSpent'],
+                    "amount_spent": items[i]['amount_spent'],
                   };
                 }
                 Map<String,dynamic> expenseData = {
@@ -142,7 +143,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                   "merchant_name": merchantNameController.text,
                   "amount_spent": double.parse(totalAmountController.text),
                   "payment_method": paymentMethodController.text,
-                  "date": dateController.text.trim(),
+                  "date_time": dateController.text.trim(),
                   "category": selectedCategory,
                   "items": items,
                 };
@@ -169,7 +170,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
 
   Widget itemRow(int index) {
     TextEditingController titleController = TextEditingController(text: items[index]['title']);
-    TextEditingController amountController = TextEditingController(text: items[index]['amountSpent'].toString());
+    TextEditingController amountController = TextEditingController(text: items[index]['amount_spent'].toString());
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -188,7 +189,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
             child: TextFormField(
               controller: amountController,
               keyboardType: TextInputType.number,
-              onChanged: (value) => items[index]['amountSpent'] = double.tryParse(value) ?? 0.0,
+              onChanged: (value) => items[index]['amount_spent'] = double.tryParse(value) ?? 0.0,
               decoration: InputDecoration(labelText: 'Amount'),
             ),
           ),
@@ -223,7 +224,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
               context: context,
               initialDate:
               (dateController.text.isNotEmpty)
-                  ? DateFormat('dd-MM-yyyy')
+                  ? DateTime
                   .parse(dateController.text)
                   : DateTime.now(),
               firstDate: DateTime(2000), lastDate: DateTime(2050),

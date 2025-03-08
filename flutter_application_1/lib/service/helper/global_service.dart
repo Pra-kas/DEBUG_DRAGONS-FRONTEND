@@ -9,7 +9,7 @@ class GlobalService {
       Map<String, dynamic>? requestBody,
       required String method}) async {
     final Uri url =
-        Uri.parse("${AppValues.ip}/$endpoint"); // ✅ Uses passed endpoint
+        Uri.parse("${AppValues.ip}$endpoint"); // ✅ Uses passed endpoint
     final Map<String, String> headers = {
       "Content-Type": "application/json",
     };
@@ -58,6 +58,7 @@ class GlobalService {
       final Map<String, dynamic> decodedBody = jsonDecode(response.body);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        decodedBody["status"] = true;
         return decodedBody;
       } else {
         return {
