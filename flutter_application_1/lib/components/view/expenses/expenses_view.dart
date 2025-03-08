@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/models/expense_model.dart';
 import 'package:flutter_application_1/components/widgets/expense_card.dart';
@@ -17,7 +18,7 @@ class ExpensesView extends StatefulWidget {
 
 class _ExpensesViewState extends State<ExpensesView> {
   bool initialLoading = true;
-  List<ExpenseModel> expenses = [];
+  List<Map<String,dynamic>> expenses = [];
   ExpensesBloc expensesBloc = ExpensesBloc();
 
   @override
@@ -36,6 +37,7 @@ class _ExpensesViewState extends State<ExpensesView> {
         }
         if (state is ExpensesLoadedState) {
           initialLoading = false;
+          expenses = state.expenses;
         }
         if (state is ExpensesErrorState) {
           initialLoading = false;
@@ -44,7 +46,7 @@ class _ExpensesViewState extends State<ExpensesView> {
         }
       },
       builder: (context, state) {
-        if(state is ExpensesImageProcessingState){
+        if(state is ExpensesImageProcessingState || state is ExpensePdfProcessingState){
           return SpinKitCircle(color: primary,);
         }
         if(state is ExpenseImageProcessedState){
@@ -87,7 +89,14 @@ class _ExpensesViewState extends State<ExpensesView> {
                       ),
                       ListTile(
                         title: Center(child: Text("Upload pdf",style: TextStyle(color: Colors.grey,fontFamily: "medium"),)),
-                        onTap: (){},
+                        onTap: () async{
+                          final value = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+                          if(value != null){
+                            expensesBloc.add(ExpensePdfPickedEvent(value));
+                            print(value);
+                            Navigator.pop(context);
+                          }
+                        },
                       ),
                     ],
                   );
@@ -121,13 +130,13 @@ class _ExpensesViewState extends State<ExpensesView> {
               ),
             ),
           ]),
-          body: bodyPartOfExpensesView(),
+          body: bodyPartOfExpensesView(expenses),
         );
       },
     );
   }
 
-  Widget bodyPartOfExpensesView() {
+  Widget bodyPartOfExpensesView(List<Map<String,dynamic>> expenses) {
     return initialLoading
         ? Center(
             child: SpinKitCircle(
@@ -136,16 +145,16 @@ class _ExpensesViewState extends State<ExpensesView> {
         : ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: expensesBloc.expenseList.length,
+      itemCount: expenses.length,
       itemBuilder: (context, index) {
         return ExpenseCard(
-            expenseTitle: expensesBloc.expenseList[index]["expense_title"],
-            amountSpent: expensesBloc.expenseList[index]["amount_spent"],
-            category: expensesBloc.expenseList[index]["category"],
-            dateTime: expensesBloc.expenseList[index]["date_time"],
-            paymentMethod: expensesBloc.expenseList[index]["payment_method"],
-            merchantName: expensesBloc.expenseList[index]["merchant_name"],
-          expenseData: expensesBloc.expenseList[index],
+            expenseTitle: expenses[index]["expense_title"],
+            amountSpent: expenses[index]["amount_spent"],
+            category: expenses[index]["category"],
+            dateTime: expenses[index]["date_time"],
+            paymentMethod: expenses[index]["payment_method"],
+            merchantName: expenses[index]["merchant_name"],
+          expenseData: expenses[index],
         );
       },
     );
