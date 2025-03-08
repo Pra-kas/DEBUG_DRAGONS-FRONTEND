@@ -15,3 +15,10 @@ class ExpensesLoadedState extends ExpensesActionState {
 }
 
 class ExpensesErrorState extends ExpensesActionState {}
+
+class ExpensesImageProcessingState extends ExpensesActionState {}
+
+class ExpenseImageProcessedState extends ExpensesActionState {
+  List<ExpenseModel> expenses;
+  ExpenseImageProcessedState(this.expenses);
+}

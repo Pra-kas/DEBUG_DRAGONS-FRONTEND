@@ -1,4 +1,4 @@
 
 class AppValues {
-  static String ip = "";
+  static String ip = "http://10.18.0.146:3000/";
 }
