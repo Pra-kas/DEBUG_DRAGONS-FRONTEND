@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "101217440706",
+    "project_id": "finnfloww",
+    "storage_bucket": "finnfloww.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101217440706:android:a9c09bb6b54d47d08b7c5b",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFcAakxrfNnQsARzoFKAKhohW_-nMn-CE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101217440706:android:c3004202794325658b7c5b",
+        "android_client_info": {
+          "package_name": "com.finnfloww.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFcAakxrfNnQsARzoFKAKhohW_-nMn-CE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

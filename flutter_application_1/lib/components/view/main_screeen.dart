@@ -1,9 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/view/analytics/analytics_view.dart';
 import 'package:flutter_application_1/components/view/expenses/expenses_view.dart';
 import 'package:flutter_application_1/components/view/settings/settings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../service/notification_service.dart';
 import '../../theme/colors.dart';
 import '../bloc/main_screen_bloc/main_screen_bloc.dart';
 
@@ -26,6 +28,29 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onTap(int index) {
     mainScreenBloc.add(MainScreenBottomNavigationBarSwitchingEvent(index));
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getFirebaseNotification();
+    super.initState();
+  }
+
+  Future<void> getFirebaseNotification() async {
+    await NotificationService.instance.initialize(context);
+    NotificationSettings settings =
+    await FirebaseMessaging.instance.getNotificationSettings();
+    if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
+      settings = await FirebaseMessaging.instance.requestPermission();
+    }
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("Has permission");
+      // do api call to backend to create FCM
+    } else {
+
+    }
   }
 
   @override

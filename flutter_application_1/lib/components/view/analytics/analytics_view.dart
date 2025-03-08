@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_application_1/components/bloc/AnalyticsBloc/analytics_bloc_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../bloc/AnalyticsBloc/analytics_bloc_bloc.dart';
 
 class AnalyticsView extends StatefulWidget {
   const AnalyticsView({super.key});
@@ -12,65 +12,35 @@ class AnalyticsView extends StatefulWidget {
 
 class _AnalyticsViewState extends State<AnalyticsView>
     with TickerProviderStateMixin {
+  final analyticsBloc = AnalyticsBlocBloc();
+  int selectedMonthIndex = 0;
   List<int> xAxis = [];
-  List<String> month = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  List<String> barTouchData = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
   List<int> yAxis = [];
   String xTitle = "";
   String yTitle = "";
-  late TabController tabController;
-  final analyticsBlocBloc = AnalyticsBlocBloc();
+
+  List<String> months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
 
   @override
   void initState() {
-    tabController = TabController(length: 2, vsync: this);
-    analyticsBlocBloc.add(AnalyticsLoadEvent());
-    barTouchData = month;
     super.initState();
+    analyticsBloc.add(AnalyticsLoadEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Analytics',
-        ),
-        forceMaterialTransparency: true,
-      ),
+      appBar: AppBar(title: const Text('Analytics')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<AnalyticsBlocBloc, AnalyticsBlocState>(
-          bloc: analyticsBlocBloc,
+          bloc: analyticsBloc,
           builder: (context, state) {
             if (state is AnalyticsLoadingState) {
-              return CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             if (state is AnalyticsLoadedState) {
               xAxis = state.xList;
@@ -78,37 +48,33 @@ class _AnalyticsViewState extends State<AnalyticsView>
               xTitle = state.xTitle;
               yTitle = state.yTitle;
             }
+
             return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                // Month Selector
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: [
-                      for (int i = 0; i < 12; i++)
-                        monthlyExpenseContainer(1000, month[i], i, i)
-                    ],
+                    children: List.generate(12, (index) {
+                      return monthlyExpenseContainer(
+                        month: months[index],
+                        expense: yAxis[index],
+                        isSelected: selectedMonthIndex == index,
+                        onTap: () {
+                          setState(() {
+                            selectedMonthIndex = index;
+                          });
+                        },
+                      );
+                    }),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text('Expense Graphs'),
-                const SizedBox(
-                  height: 20,
-                ),
-                expenseGraph(context, xAxis, yAxis, xTitle, yTitle,month),
-                const SizedBox(
-                  height: 20,
-                ),
-                TabBar(
-                controller: tabController, 
-                dividerColor: Colors.transparent,
-                tabs: [
-                  Tab(child: Text("Expenses")),
-                  Tab(child: Text("Stocks"))
-                ]),
+                const SizedBox(height: 20),
+                const Text('Expense Graphs', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                // Expense Graph
+                expenseGraph(context, xAxis, yAxis, xTitle, yTitle,months),
               ],
             );
           },
@@ -118,33 +84,29 @@ class _AnalyticsViewState extends State<AnalyticsView>
   }
 }
 
-Widget monthlyExpenseContainer(
-    int value, String month, int expense, int income) {
+// Monthly Expense Container Widget
+Widget monthlyExpenseContainer({
+  required String month,
+  required int expense,
+  required bool isSelected,
+  required VoidCallback onTap,
+}) {
   return GestureDetector(
-    onTap: () {
-    },
+    onTap: onTap,
     child: Card(
-      color: Colors.grey[200],
+      color: isSelected ? Colors.blue[100] : Colors.grey[200],
+      margin: const EdgeInsets.symmetric(horizontal: 4),
       child: Padding(
-        padding: EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(month,style: TextStyle(fontWeight: FontWeight.bold),),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Expense'),
-                Text('$expense'),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Income'),
-                Text('$income'),
-              ],
-            ),
+            Text(month, style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              const Text('Expense:'),
+              Text('₹$expense', style: const TextStyle(fontWeight: FontWeight.bold)),
+            ]),
           ],
         ),
       ),
@@ -152,11 +114,12 @@ Widget monthlyExpenseContainer(
   );
 }
 
-Widget expenseGraph(BuildContext context, List<int> xList, List<int> yList,
-    String xTitle, String yTitle, List<String>month) {
+// Expense Graph Widget
+Widget expenseGraph(BuildContext context, List<int> xList, List<int> yList, String xTitle, String yTitle, List<String> months) {
   return SizedBox(
-    height: MediaQuery.of(context).size.width * 0.9,
-    child: BarChart(BarChartData(
+    height: MediaQuery.of(context).size.width * 0.7,
+    child: BarChart(
+      BarChartData(
         alignment: BarChartAlignment.spaceEvenly,
         borderData: FlBorderData(show: false),
         gridData: FlGridData(show: false),
@@ -164,9 +127,7 @@ Widget expenseGraph(BuildContext context, List<int> xList, List<int> yList,
         barTouchData: BarTouchData(
           touchTooltipData: BarTouchTooltipData(
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              return BarTooltipItem(
-                  month[group.x.toInt()],
-                  TextStyle(color: Colors.white));
+              return BarTooltipItem('₹${yList[group.x.toInt()]}', TextStyle(color: Colors.white));
             },
           ),
         ),
@@ -177,27 +138,34 @@ Widget expenseGraph(BuildContext context, List<int> xList, List<int> yList,
               barRods: [
                 BarChartRodData(
                   toY: yList[i].toDouble(),
-                  fromY: 0,
                   width: 25,
+                  color: Colors.blue,
                 ),
               ],
-              barsSpace: 4,
             ),
         ],
         titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              axisNameWidget: Text(yTitle),
-              sideTitles: SideTitles(showTitles: false, reservedSize: 30),
+          leftTitles: AxisTitles(
+            axisNameWidget: Text(yTitle),
+            sideTitles: SideTitles(showTitles: true, reservedSize: 30),
+          ),
+          bottomTitles: AxisTitles(
+            axisNameWidget: Text(xTitle),
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(months[value.toInt()].substring(0, 3)),
+                );
+              },
+              reservedSize: 30,
             ),
-            bottomTitles: AxisTitles(
-              axisNameWidget: Text(yTitle),
-              sideTitles: SideTitles(showTitles: false, reservedSize: 30),
-            ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            )))),
+          ),
+          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+      ),
+    ),
   );
 }
