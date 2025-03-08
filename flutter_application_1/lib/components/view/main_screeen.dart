@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> mainScreens = [
     ExpensesView(),
     AnalyticsView(),
-    Settings(),
+    ProfilePage(),
   ];
   MainScreenBloc mainScreenBloc = MainScreenBloc();
   int selectedIndex = 0;

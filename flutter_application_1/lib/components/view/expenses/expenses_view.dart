@@ -61,6 +61,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               "Expenses",
               style: AppStyles.setAppStyle(black, 20, FontWeight.bold, "black"),
             ),
+            centerTitle: true,
             leading: SizedBox(),
           ),
           floatingActionButton: Column(

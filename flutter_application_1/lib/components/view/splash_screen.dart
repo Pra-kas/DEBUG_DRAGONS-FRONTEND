@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/view/Auth/login_view.dart';
+import 'package:flutter_application_1/components/view/main_screeen.dart';
 
 import '../../theme/colors.dart';
 
@@ -19,14 +22,52 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> navigateToMainScreen() async {
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pushNamed(context, "/main");
+
+    try {
+      var user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        // User is not logged in, navigate to LoginPage
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+              (Route<dynamic> route) => false,
+        );
+      } else {
+        // User is logged in, navigate to MainScreen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+              (Route<dynamic> route) => false,
+        );
+      }
+    } catch (e) {
+      print("Error in splash screen: $e");
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+            (Route<dynamic> route) => false,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: true ? CircleAvatar(backgroundColor: white,) : Image(image: AssetImage("assets/images/applogo.png"))
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Icon(
+            Icons.account_balance_wallet,
+            color: Colors.white,
+            size: 60,
+          ),
+        ),
       ),
     );
   }

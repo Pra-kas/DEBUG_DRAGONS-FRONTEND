@@ -1,6 +1,12 @@
 part of 'analytics_bloc_bloc.dart';
 
 @immutable
-sealed class AnalyticsBlocEvent {}
+abstract class AnalyticsBlocEvent {}
 
 class AnalyticsLoadEvent extends AnalyticsBlocEvent {}
+
+class AnalyticsMonthSelectedEvent extends AnalyticsBlocEvent {
+  final int monthIndex;
+
+  AnalyticsMonthSelectedEvent(this.monthIndex);
+}

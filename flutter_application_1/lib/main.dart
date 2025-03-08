@@ -18,7 +18,7 @@ Future<void> main() async {
       "/main" : (BuildContext context) => MainScreen(),
       "/analytics" : (BuildContext context) => AnalyticsView(),
       "/expenses" : (BuildContext context) => ExpensesView(),
-      "/settings" : (BuildContext context) => Settings()
+      "/settings" : (BuildContext context) => ProfilePage()
     },
   );
   runApp(myApp);
