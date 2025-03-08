@@ -4,6 +4,7 @@ import 'package:flutter_application_1/components/view/analytics/analytics_view.d
 
 void main() {
   Widget myApp = MaterialApp(
+    debugShowCheckedModeBanner: false,
     initialRoute: "/",
     routes: {
       "/" : (BuildContext context) => AnalyticsView()
