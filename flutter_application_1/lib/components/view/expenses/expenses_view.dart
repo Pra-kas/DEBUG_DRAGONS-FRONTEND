@@ -80,7 +80,8 @@ class _ExpensesViewState extends State<ExpensesView> {
             category: expensesBloc.expenseList[index]["category"],
             dateTime: expensesBloc.expenseList[index]["date_time"],
             paymentMethod: expensesBloc.expenseList[index]["payment_method"],
-            merchantName: expensesBloc.expenseList[index]["merchant_name"]
+            merchantName: expensesBloc.expenseList[index]["merchant_name"],
+          expenseData: expensesBloc.expenseList[index],
         );
       },
     );
