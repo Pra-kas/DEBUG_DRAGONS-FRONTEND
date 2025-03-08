@@ -29,3 +29,15 @@ class ExpensePdfProcessedState extends ExpensesActionState {
   List<Map<String,dynamic>> expenses;
   ExpensePdfProcessedState(this.expenses);
 }
+
+class ExpenseChoiceShipSelected extends ExpensesActionState {
+  final String choiceShip;
+  ExpenseChoiceShipSelected(this.choiceShip);
+}
+
+class ExpenseChatBotLoadingState extends ExpensesActionState {}
+
+class ExpenseChatBotLoadedState extends ExpensesActionState {
+  final String message;
+  ExpenseChatBotLoadedState(this.message);
+}
