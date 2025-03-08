@@ -39,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
       },
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: bgColor,
           body: mainScreens[selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: Colors.white, // Light theme background
