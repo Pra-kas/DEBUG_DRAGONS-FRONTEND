@@ -134,21 +134,20 @@ class _ExpensesViewState extends State<ExpensesView> {
             color: primary,
           ))
         : ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: expensesBloc.expenseList.length,
-            itemBuilder: (context, index) {
-              return ExpenseCard(
-                  expenseTitle: expensesBloc.expenseList[index]
-                      ["expense_title"],
-                  amountSpent: expensesBloc.expenseList[index]["amount_spent"],
-                  category: expensesBloc.expenseList[index]["category"],
-                  dateTime: expensesBloc.expenseList[index]["date_time"],
-                  paymentMethod: expensesBloc.expenseList[index]
-                      ["payment_method"],
-                  merchantName: expensesBloc.expenseList[index]
-                      ["merchant_name"]);
-            },
-          );
+      physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: expensesBloc.expenseList.length,
+      itemBuilder: (context, index) {
+        return ExpenseCard(
+            expenseTitle: expensesBloc.expenseList[index]["expense_title"],
+            amountSpent: expensesBloc.expenseList[index]["amount_spent"],
+            category: expensesBloc.expenseList[index]["category"],
+            dateTime: expensesBloc.expenseList[index]["date_time"],
+            paymentMethod: expensesBloc.expenseList[index]["payment_method"],
+            merchantName: expensesBloc.expenseList[index]["merchant_name"],
+          expenseData: expensesBloc.expenseList[index],
+        );
+      },
+    );
   }
 }
