@@ -28,12 +28,13 @@ Future<bool> updateExpense(Map<String,dynamic> expense) async {
 Future<bool> createExpense(Map<String,dynamic> expense) async {
   try {
     var request = await http.post(
-        Uri.parse("${AppValues.ip}/addExpense"),
-      body: jsonEncode(expense),
+        Uri.parse("${AppValues.ip}addExpense"),
+      body: jsonEncode({"data":expense}),
       headers: {
         "Content-Type": "application/json",
       }
     );
+    print("Completed request ${request.statusCode}"); 
     if (request.statusCode == 200) {
       return true;
     }

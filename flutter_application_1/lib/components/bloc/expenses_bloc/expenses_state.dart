@@ -10,8 +10,9 @@ class ExpensesLoadingState extends ExpensesActionState {}
 
 class ExpensesLoadedState extends ExpensesActionState {
   final List<Map<String,dynamic>> expenses;
+  final List<Map<String,dynamic>> recurringExpenses;
 
-  ExpensesLoadedState(this.expenses);
+  ExpensesLoadedState(this.expenses,this.recurringExpenses);
 }
 
 class ExpensesErrorState extends ExpensesActionState {}
