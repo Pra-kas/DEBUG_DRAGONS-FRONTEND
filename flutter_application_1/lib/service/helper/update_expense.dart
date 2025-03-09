@@ -13,7 +13,7 @@ Future<bool> updateExpense(Map<String,dynamic> expense) async {
       body: jsonEncode(expense),
       headers: {
         "Content-Type": "application/json",
-        "Authorization" : AppValues.jwtToken
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
       }
     );
     if (request.statusCode == 200) {
@@ -33,7 +33,7 @@ Future<bool> createExpense(Map<String,dynamic> expense) async {
       body: jsonEncode(expense),
       headers: {
         "Content-Type": "application/json",
-        "Authorization" : AppValues.jwtToken
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
       }
     );
     if (request.statusCode == 200) {
@@ -53,7 +53,7 @@ Future<bool> addIncome(Map<String,dynamic> income) async {
       body: jsonEncode(income),
       headers: {
         "Content-Type": "application/json",
-        "Authorization" : AppValues.jwtToken
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
       }
     );
     if (request.statusCode == 200) {
