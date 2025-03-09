@@ -93,9 +93,9 @@ class _AnalyticsViewState extends State<AnalyticsView>
           minimumSize: const Size(50, 50),
         ),
         child: Icon(
-          Icons.star,
+          Icons.reddit,
           size: 35,
-          color: Colors.green,
+          color: Colors.orange,
         ),
       ),
       body: Padding(
