@@ -30,10 +30,11 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text(
           'My Profile',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontFamily: "medium"),
         ),
         backgroundColor: Colors.blue,
         elevation: 0,
+        leading: Icon(Icons.settings_outlined),
       ),
       body: SingleChildScrollView(
         child: Column(
