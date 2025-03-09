@@ -1,3 +1,4 @@
+
 # Define 3.0
 The official template repository for Define 3.0
 
@@ -8,8 +9,8 @@ The official template repository for Define 3.0
 # FINFLOW
 
 ### Team Information
-- *Team Name*: DEBUG DRAGONS 
-- *Track*: FINTECH
+- **Team Name**: DEBUG DRAGONS 
+- **Track**: FINTECH
 
 ### Team Members
 | Name | Role | GitHub | LinkedIn |
@@ -26,41 +27,43 @@ The official template repository for Define 3.0
 2. Dashboard to visualise the income and expense
 
 ### Problem Statement
-Develop a basic prototype of a fintech website with an AI-powered chatbot that provides users with financial insights and customer support. The website should have a clean, user-friendly interface with a simple dashboard displaying sample financial data and a chatbot capable of handling basic FAQs related to fintech services
+_Develop a basic prototype of a fintech website with an AI-powered chatbot that provides users with financial insights and customer support. The website should have a clean, user-friendly interface with a simple dashboard displaying sample financial data and a chatbot capable of handling basic FAQs related to fintech services_
 
 ### Solution
-Start
-    Users register and integrate their past financial transactions with AI for personalized insights.
-    Only finance-related questions are allowed.
-User Interaction & Data Input
-    Users can provide financial data such as expenses and income through:
-        Bills (image upload for AI processing)
-        Bank statements
-        Manual entry
-AI-Powered Insights & Responses
-    AI processes financial data to answer finance-related queries.
-    Users receive personalized insights based on their financial history.
-    Follw-up questions can be asked to refine responses.
-Financial Management Features
-    AI-driven financial improvement suggestions are sent via push notifications.
-    An analytics dashboard visually summarizes the user’s financial history.
-Finish
-    The chatbot ensures a seamless and interactive financial advisory experience, helping users make better financial decisions._
+
+#### Start  
+- Users register and integrate their past financial transactions with AI for personalized insights.  
+- Only finance-related questions are allowed.  
+
+#### User Interaction & Data Input  
+Users can provide financial data such as expenses and income through:  
+- **Bills** (image upload for AI processing)  
+- **Bank statements**  
+- **Manual entry**  
+
+#### AI-Powered Insights & Responses  
+- AI processes financial data to answer finance-related queries.  
+- Users receive personalized insights based on their financial history.  
+- Follow-up questions can be asked to refine responses.  
+
+#### Financial Management Features  
+- AI-driven financial improvement suggestions are sent via push notifications.  
+- An analytics dashboard visually summarizes the user’s financial history.  
+
+#### Finish  
+The chatbot ensures a seamless and interactive financial advisory experience, helping users make better financial decisions.  
 
 ### Demo
-[![Project Demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
-Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link
+[[FINFLOW VIDEO WORKING]](https://drive.google.com/file/d/1uRcKkBKNLxH21IUWpV2e9GOCyuQNcYPM/view?usp=sharing)
 
-### Live Project
-[Project Name](https://your-project-url.com)
 
 ## Technical Implementation
 
 ### Technologies Used
-- *Frontend*: [Flutter]
-- *Backend*: [Nodejs,Express]
-- *Database*: [MongoDB]
-- *APIs*: [GeminiAPI]
+- **Frontend**: [Flutter]
+- **Backend**: [Nodejs,Express]
+- **Database**: [MongoDB]
+- **APIs**: [GeminiAPI]
 
 ### Key Features
 - Recurring items automatic suggestion
@@ -69,45 +72,51 @@ Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link
 
 ## Setup Instructions
 
+
 ### Prerequisites
-- Requirement 1
-- Requirement 2
-- Requirement 3
+- Flutter SDK (Latest stable version) installed
+- Android Studio or Visual Studio Code (VS Code) with Flutter/Dart plugins
+- A physical device or emulator set up for testing
 
-### Installation 
-bash
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/Pra-Kas/DEBUG_DRAGONS-FRONTEND.git
+
+# Navigate to the project directory
+cd flutter_application_1
+
+# Install dependencies
+flutter pub get
 
 
+# Run Application
+flutter run --debug
 
-### Running the Project
-bash
-
+```
 
 
 ## Additional Resources
 
-### Project Timeline
-Brief overview of your development process and milestones
 
 ### Challenges Faced
-Discuss technical challenges and how you overcame them
+_Extract the data and processing them._
+_Firebase integration with frontend and backend_
+_Designing the workflow of the application_
 
 ### Future Enhancements
-Share your vision for future development
+_We will optimize the flow of large data to AI and ensure the integrity,confidentiality of the data_
 
-### References (if any)
-- [Reference 1](link)
-- [Reference 2](link)
 
 ---
 
 ### Submission Checklist
-- [ ] Completed all sections of this README
-- [ ] Added project demo video
+- [✔] Completed all sections of this README
+- [✔] Added project demo video
 - [ ] Provided live project link
-- [ ] Ensured all team members are listed
-- [ ] Included setup instructions
-- [ ] Submitted final code to repository
+- [✔] Ensured all team members are listed
+- [✔] Included setup instructions
+- [✔] Submitted final code to repository
 
 ---
 
