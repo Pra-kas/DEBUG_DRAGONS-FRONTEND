@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/view/main_screeen.dart';
 import 'package:flutter_application_1/data/appvalues.dart';
+import 'package:flutter_application_1/service/auth/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
@@ -223,11 +224,17 @@ class LoginPage extends StatelessWidget {
         throw Exception('Failed to get JWT token');
       }
       AppValues.jwtToken = jwtToken;
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const MainScreen()),
-            (Route<dynamic> route) => false,
-      );
+      bool isAuthenticated = await authService();
+      if (isAuthenticated) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MainScreen()),
+          (Route<dynamic> route) => false,
+        );
+      }
+      else  {
+        throw Exception("Unauthorized");
+      }
     } catch (e) {
       print("Error in google sign in $e");
       ScaffoldMessenger.of(context).showSnackBar(

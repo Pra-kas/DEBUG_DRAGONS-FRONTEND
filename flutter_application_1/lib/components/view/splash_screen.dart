@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/view/Auth/login_view.dart';
 import 'package:flutter_application_1/components/view/main_screeen.dart';
+import 'package:flutter_application_1/data/appvalues.dart';
 
 import '../../theme/colors.dart';
 
@@ -34,6 +35,11 @@ class _SplashScreenState extends State<SplashScreen> {
               (Route<dynamic> route) => false,
         );
       } else {
+        String? jwtToken = await user.getIdToken();
+        if (jwtToken == null) {
+          throw Exception("Unauthorized");
+        }
+        AppValues.jwtToken = jwtToken;
         // User is logged in, navigate to MainScreen
         Navigator.pushAndRemoveUntil(
           context,
