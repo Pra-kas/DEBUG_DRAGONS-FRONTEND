@@ -191,7 +191,7 @@ class _ExpensesViewState extends State<ExpensesView> {
               child: Icon(
                 Icons.add,
                 size: 35,
-                color: Colors.green,
+                color: Colors.orange,
               ),
             ),
             SizedBox(height: 20),
@@ -219,9 +219,9 @@ class _ExpensesViewState extends State<ExpensesView> {
                 minimumSize: const Size(50, 50),
               ),
               child: Icon(
-                Icons.star,
+                Icons.reddit,
                 size: 35,
-                color: Colors.green,
+                color: Colors.orange,
               ),
             ),
           ]),

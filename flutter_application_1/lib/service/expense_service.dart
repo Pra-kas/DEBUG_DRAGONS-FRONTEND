@@ -14,7 +14,7 @@ Future<String> uploadBill(XFile image) async {
     var response = await http.post(
       Uri.parse("${AppValues.ip}addExpenseByBill"),
       headers: {
-        "Authorization" : AppValues.jwtToken
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
       },
       body: {"image64": base64String},
     );
@@ -40,7 +40,7 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
     );
     request.headers.addAll({
       "Content-Type": "multipart/form-data",
-      "Authorization" : AppValues.jwtToken
+      "Authorization" : "Bearer ${AppValues.jwtToken}"
     });
     File file = File(pdf.files.single.path!);
     request.files.add(await http.MultipartFile.fromPath(
@@ -65,11 +65,12 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
 Future<dynamic> getExpenses() async {
     try{
       List<Map<String,dynamic>> expenses = [];
+      // print("JWT token : ${AppValues.jwtToken}");
       var response = await http.get(
           Uri.parse("${AppValues.ip}getExpense"),
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization" : AppValues.jwtToken
+          "Authorization" : "Bearer ${AppValues.jwtToken}"
         }
       );
       List<Map<String,dynamic>> recurringExpenses = [];      
@@ -98,6 +99,9 @@ Future<String> getChatBotResponse(String message) async {
   try {
     var response = await http.post(
       Uri.parse("${AppValues.ip}botQuery"),
+      headers: {
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
+      },
       body: {"botQuery": message},
     );
     var decodedResponse = jsonDecode(response.body);

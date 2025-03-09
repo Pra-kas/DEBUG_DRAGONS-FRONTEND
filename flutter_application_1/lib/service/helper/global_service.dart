@@ -12,7 +12,7 @@ class GlobalService {
         Uri.parse("${AppValues.ip}$endpoint"); // ✅ Uses passed endpoint
     final Map<String, String> headers = {
       "Content-Type": "application/json",
-      "Authorization" : AppValues.jwtToken
+      "Authorization" : "Bearer ${AppValues.jwtToken}"
     };
 
     try {

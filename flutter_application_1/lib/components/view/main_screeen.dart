@@ -5,6 +5,7 @@ import 'package:flutter_application_1/components/models/user_model.dart';
 import 'package:flutter_application_1/components/view/analytics/analytics_view.dart';
 import 'package:flutter_application_1/components/view/expenses/expenses_view.dart';
 import 'package:flutter_application_1/components/view/settings/settings.dart';
+import 'package:flutter_application_1/service/auth/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../service/notification_service.dart';
@@ -46,7 +47,6 @@ class _MainScreenState extends State<MainScreen> {
       UserModel.name = FirebaseAuth.instance.currentUser!.displayName!;
       UserModel.email = FirebaseAuth.instance.currentUser!.email!;
       UserModel.photoUrl = FirebaseAuth.instance.currentUser!.photoURL!;
-      UserModel.phone = FirebaseAuth.instance.currentUser!.phoneNumber!;
     }
   }
 
@@ -61,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print("Has permission");
       // do api call to backend to create FCM
+       await sendFCM(); // enabled after the backend implemetation.
     } else {
 
     }

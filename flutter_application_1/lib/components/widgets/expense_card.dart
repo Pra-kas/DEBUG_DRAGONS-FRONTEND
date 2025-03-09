@@ -66,7 +66,7 @@ class ExpenseCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${DateFormat.yMMMd().format(parsedDate)} • ${DateFormat.jm().format(parsedDate)}',
+                      DateFormat.yMMMd().format(parsedDate),
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],
