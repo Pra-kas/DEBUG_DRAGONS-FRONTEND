@@ -30,12 +30,13 @@ Future<bool> createExpense(Map<String,dynamic> expense) async {
   try {
     var request = await http.post(
         Uri.parse("${AppValues.ip}addExpense"),
-      body: jsonEncode(expense),
+      body: jsonEncode({"data":expense}),
       headers: {
         "Content-Type": "application/json",
         "Authorization" : AppValues.jwtToken
       }
     );
+    print("Completed request ${request.statusCode}"); 
     if (request.statusCode == 200) {
       return true;
     }

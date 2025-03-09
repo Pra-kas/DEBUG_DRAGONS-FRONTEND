@@ -35,20 +35,26 @@ class ExpensesBloc extends Bloc<ExpensesEvent, ExpensesState> {
   Future<void> expensePdfPickedEvent(ExpensePdfPickedEvent event, Emitter<ExpensesState> emit)async{
     emit(ExpensePdfProcessingState());
     await uploadPdf(event.pdf);
-    List<Map<String,dynamic>> expenses = await getExpenses();
+    dynamic val = await getExpenses();
+    List<Map<String,dynamic>> expenses = val["expenses"];
+    List<Map<String,dynamic>> recurringExpenses = val["recurringExpenses"];
     emit(ExpensePdfProcessedState(expenses));
   }
 
   Future<void> expenseImagePickedEvent(ExpenseImagePickedEvent event, Emitter<ExpensesState> emit)async{
     emit(ExpensesImageProcessingState());
     await uploadBill(event.image);
-    List<Map<String,dynamic>> expenses = await getExpenses();
+    dynamic val = await getExpenses();
+    List<Map<String,dynamic>> expenses = val["expenses"];
+    List<Map<String,dynamic>> recurringExpenses = val["recurringExpenses"];
     emit(ExpenseImageProcessedState(expenses));
   }
 
   Future<void> expensesInitialEvent(ExpensesInitialEvent event, Emitter<ExpensesState> emit) async {
     emit(ExpensesLoadingState());
-    List<Map<String,dynamic>> expenses = await getExpenses();
-    emit(ExpensesLoadedState(expenses));
+    dynamic val = await getExpenses();
+    List<Map<String,dynamic>> expenses = val["expenses"];
+    List<Map<String,dynamic>> recurringExpenses = val["recurringExpenses"];
+    emit(ExpensesLoadedState(expenses,recurringExpenses));
   }
 }
