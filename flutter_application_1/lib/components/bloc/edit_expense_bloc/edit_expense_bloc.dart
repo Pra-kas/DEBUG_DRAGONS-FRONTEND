@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter_application_1/service/helper/global_service.dart';
+import 'package:flutter_application_1/service/helper/update_expense.dart';
 import 'package:meta/meta.dart';
 
 part 'edit_expense_event.dart';
@@ -11,11 +13,26 @@ class EditExpenseBloc extends Bloc<EditExpenseEvent, EditExpenseState> {
     on<EditExpenseSaveEvent> (editExpenseSaveEvent);
   }
 
-  FutureOr<void> editExpenseSaveEvent(EditExpenseSaveEvent event, Emitter<EditExpenseState> emit) {
+  Future<void> editExpenseSaveEvent(EditExpenseSaveEvent event, Emitter<EditExpenseState> emit) async {
     emit(EditExpenseSavingState());
     Map<String,dynamic> expense = event.expense;
-    print(expense);
+    print("expense ${expense} bool : ${event.isEdit}");
     // do api call here
-    emit(EditExpenseSavedState());
+    if (event.isEdit) {
+      bool isUpdated = await updateExpense(expense);
+      print("bool : $isUpdated");
+      if (isUpdated) {
+        emit(EditExpenseSavedState());
+      } else  {
+        emit(EditExpenseErrorState());
+      }
+    } else {
+      bool isCreated = await createExpense(expense);
+      if (isCreated) {
+        emit(EditExpenseSavedState());
+      } else  {
+        emit(EditExpenseErrorState());
+      }
+    }
   }
 }

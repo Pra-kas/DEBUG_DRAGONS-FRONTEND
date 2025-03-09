@@ -156,8 +156,11 @@ class _ExpensesViewState extends State<ExpensesView> {
                     useSafeArea: true,
                     isScrollControlled: true,
                     builder: (BuildContext context) {
-                      return chatBotBottomSheet(
-                        expensesBloc: expensesBloc,
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom, // Moves content up
+                        ),
+                        child: ChatBotBottomSheet(expensesBloc: expensesBloc),
                       );
                     });
               },
@@ -205,15 +208,30 @@ class _ExpensesViewState extends State<ExpensesView> {
   }
 }
 
-class chatBotBottomSheet extends StatelessWidget {
+class ChatBotBottomSheet extends StatefulWidget {
   final ExpensesBloc expensesBloc;
-  chatBotBottomSheet({
+
+  const ChatBotBottomSheet({
     required this.expensesBloc,
     super.key,
   });
 
+  @override
+  State<ChatBotBottomSheet> createState() => _ChatBotBottomSheetState();
+}
+
+class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
   String? selectedChip;
   final _controller = TextEditingController();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> chipLabels = [
@@ -223,84 +241,272 @@ class chatBotBottomSheet extends StatelessWidget {
       "Others"
     ];
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: BlocBuilder<ExpensesBloc, ExpensesState>(
-        bloc: expensesBloc,
-        builder: (context, state) {
-          if (state is ExpenseChoiceShipSelected) {
-            selectedChip = state.choiceShip;
-          }
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 1,
+          )
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: BlocBuilder<ExpensesBloc, ExpensesState>(
+          bloc: widget.expensesBloc,
+          builder: (context, state) {
+            if (state is ExpenseChoiceShipSelected) {
+              selectedChip = state.choiceShip;
+            }
 
-          List<Widget> columnValues = [
-            const SizedBox(height: 20),
-            Text(
-              "How can I help you ???",
-              style: TextStyle(fontFamily: "medium", fontSize: 20),
-            ),
-            const SizedBox(height: 20),
-            if (selectedChip == "Others")
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.send),
-                        onPressed: () {
-                          if( (_controller.text.isNotEmpty)) {
-                            expensesBloc
-                              .add(ExpensechatBotEvent(_controller.text));
-                          }
-                        }),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: primary, width: 0.5),
+            // Auto-scroll to bottom when new messages arrive
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (_scrollController.hasClients) {
+                _scrollController.animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              }
+            });
+
+            // Clear text controller after response is received
+            if (state is ExpenseChatBotLoadedState) {
+              _controller.clear();
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Handle bar at the top
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 8, bottom: 16),
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: primary, width: 0.5),
-                    ),
-                    border: InputBorder.none,
-                    hintText: "Type your message here",
-                    hintStyle: TextStyle(fontFamily: "medium"),
-                    prefixIcon: Icon(Icons.info),
                   ),
                 ),
+
+                // Title with an icon
+                Row(
+                  children: [
+                    Icon(
+                      Icons.support_agent,
+                      color: Theme.of(context).primaryColor,
+                      size: 28,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "Finance Assistant",
+                      style: TextStyle(
+                        fontFamily: "medium",
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Chat topic chips in a horizontally scrollable container
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: chipLabels.map((label) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: ChoiceChip(
+                          selected: selectedChip == label,
+                          label: Text(label),
+                          labelStyle: TextStyle(
+                            fontWeight: selectedChip == label ? FontWeight.bold : FontWeight.normal,
+                          ),
+                          backgroundColor: Colors.grey.shade200,
+                          selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                          onSelected: (value) {
+                            setState(() {
+                              if (selectedChip == label) {
+                                selectedChip = null;
+                                _controller.clear();
+                              } else {
+                                selectedChip = label;
+                                // Set the text controller to the chip label
+                                if (label != "Others") {
+                                  _controller.text = label;
+                                } else {
+                                  _controller.clear();
+                                }
+                              }
+                            });
+
+                            widget.expensesBloc.add(
+                                ExpenseChoiceShipSelectedEvent(selectedChip ?? ""));
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Chat messages area
+                Flexible(
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (state is ExpenseChatBotLoadedState)
+                          ChatBubble(
+                            message: state.message,
+                            isFromBot: true,
+                          ),
+                        if (state is ExpenseChatBotLoadingState)
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(
+                              child: SpinKitPulse(
+                                color: Theme.of(context).primaryColor,
+                                size: 40.0,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Input field with send button - always visible
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor.withOpacity(0.5),
+                      width: 1.5,
+                    ),
+                    color: Colors.grey.shade50,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            hintText: "Type your question here...",
+                            hintStyle: TextStyle(
+                              fontFamily: "medium",
+                              color: Colors.grey.shade500,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            border: InputBorder.none,
+                          ),
+                          maxLines: null,
+                          textCapitalization: TextCapitalization.sentences,
+                        ),
+                      ),
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(24),
+                          onTap: () {
+                            if (_controller.text.isNotEmpty) {
+                              // Send message to bloc and wait for response
+                              widget.expensesBloc.add(ExpensechatBotEvent(_controller.text));
+                              // Controller will be cleared after response is received
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Icon(
+                              Icons.send_rounded,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+// Custom chat bubble widget
+class ChatBubble extends StatelessWidget {
+  final String message;
+  final bool isFromBot;
+
+  const ChatBubble({
+    required this.message,
+    required this.isFromBot,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: isFromBot ? MainAxisAlignment.start : MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (isFromBot)
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              child: CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                radius: 16,
+                child: Icon(
+                  Icons.android,
+                  size: 20,
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
-            const SizedBox(height: 20),
-            Wrap(
-              children: chipLabels.map((label) {
-                return ChoiceChip(
-                  selected: selectedChip == label,
-                  label: Text(label),
-                  onSelected: (value) {
-                    if (selectedChip == label) {
-                      selectedChip = null;
-                    } else {
-                      if (label != "Others")
-                        expensesBloc.add(ExpensechatBotEvent(label));
-                      selectedChip = label;
-                    }
-                    expensesBloc.add(
-                        ExpenseChoiceShipSelectedEvent(selectedChip ?? ""));
-                  },
-                );
-              }).toList(),
             ),
-          ];
-          if (state is ExpenseChatBotLoadedState) {
-            columnValues.add(Card(
-                child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text(state.message),
-            )));
-          }
-          if (state is ExpenseChatBotLoadingState) {
-            columnValues.add(SpinKitCircle(
-              color: primary,
-            ));
-          }
-          return Column(children: columnValues);
-        },
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: isFromBot
+                    ? Colors.grey.shade100
+                    : Theme.of(context).primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isFromBot
+                      ? Colors.grey.shade300
+                      : Theme.of(context).primaryColor.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

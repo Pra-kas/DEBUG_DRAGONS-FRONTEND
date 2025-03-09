@@ -65,7 +65,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Expense",style: AppStyles.setAppStyle(black, 20, FontWeight.bold, "black"),)),
+      appBar: AppBar(title: Text(widget.isEdit ? "Edit Expense" : "Create Expense",style: AppStyles.setAppStyle(black, 20, FontWeight.bold, "black"),)),
       body: bodyPartOfEditExpense(),
     );
   }
@@ -80,6 +80,14 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
     if (state is EditExpenseSavedState) {
       isSaving = false;
       Navigator.pop(context);
+    }
+    if (state is EditExpenseErrorState) {
+      isSaving = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Error while saving expense"),
+        ),
+      );
     }
   },
   builder: (context, state) {
@@ -138,7 +146,16 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                     "amount_spent": items[i]['amount_spent'],
                   };
                 }
-                Map<String,dynamic> expenseData = {
+                Map<String,dynamic> expenseData = widget.isEdit ? {
+                  "expense_title": expenseTitleController.text,
+                  "merchant_name": merchantNameController.text,
+                  "amount_spent": double.parse(totalAmountController.text),
+                  "payment_method": paymentMethodController.text,
+                  "date_time": dateController.text.trim(),
+                  "category": selectedCategory,
+                  "items": items,
+                  "uuid" : widget.expenseData["uuid"],
+                } : {
                   "expense_title": expenseTitleController.text,
                   "merchant_name": merchantNameController.text,
                   "amount_spent": double.parse(totalAmountController.text),
@@ -149,9 +166,10 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                 };
 
                 if (widget.isEdit) {
-                  editExpenseBloc.add(EditExpenseSaveEvent(expense : expenseData));
+                  editExpenseBloc.add(EditExpenseSaveEvent(expense : expenseData, isEdit: true));
                 } else {
                   // Add new expense
+                  editExpenseBloc.add(EditExpenseSaveEvent(expense : expenseData, isEdit: false));
                 }
               }
             },
