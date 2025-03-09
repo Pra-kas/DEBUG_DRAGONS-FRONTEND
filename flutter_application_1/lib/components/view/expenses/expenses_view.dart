@@ -237,7 +237,7 @@ class _ExpensesViewState extends State<ExpensesView> {
             child: SpinKitCircle(
             color: primary,
           ))
-        : ListView.builder(
+        : (expenses.isNotEmpty) ? ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: expenses.length,
@@ -252,7 +252,7 @@ class _ExpensesViewState extends State<ExpensesView> {
                 expenseData: expenses[index],
               );
             },
-          );
+          ) : Center(child : Text("No expenses found"));
   }
 }
 
