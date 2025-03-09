@@ -9,7 +9,7 @@ Future<bool> authService() async {
         Uri.parse("${AppValues.ip}login"),
         headers: {
           "Content-Type": "application/json",
-          "Authorization" : AppValues.jwtToken
+          "Authorization" : "Bearer ${AppValues.jwtToken}"
         }
     );
     if (request.statusCode == 200) {
@@ -31,7 +31,7 @@ Future<bool> sendFCM() async {
         Uri.parse("${AppValues.ip}fcm"),
         headers: {
           "Content-Type": "application/json",
-          "Authorization" : AppValues.jwtToken
+          "Authorization" : "Bearer ${AppValues.jwtToken}"
         },
       body: jsonEncode(body)
     );
