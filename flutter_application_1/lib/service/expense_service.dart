@@ -62,7 +62,7 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
 }
 
 
-Future<List<Map<String,dynamic>>> getExpenses() async {
+Future<dynamic> getExpenses() async {
     try{
       List<Map<String,dynamic>> expenses = [];
       // print("JWT token : ${AppValues.jwtToken}");
@@ -73,13 +73,20 @@ Future<List<Map<String,dynamic>>> getExpenses() async {
           "Authorization" : "Bearer ${AppValues.jwtToken}"
         }
       );
+      List<Map<String,dynamic>> recurringExpenses = [];      
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
+        for(var expense in data["data"]){
+            recurringExpenses.add(expense);
+        }
         for(var expense in data["message"]){
           expenses.add(expense);
         }
         print("Success: $expenses");
-        return expenses;
+        return {
+          "expenses": expenses,
+          "recurringExpenses": recurringExpenses
+        };
       }
     }
     catch(e){

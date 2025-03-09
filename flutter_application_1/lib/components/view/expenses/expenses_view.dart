@@ -6,6 +6,7 @@ import 'package:flutter_application_1/components/models/expense_model.dart';
 import 'package:flutter_application_1/components/view/expenses/add_income.dart';
 import 'package:flutter_application_1/components/view/expenses/edit_expenses.dart';
 import 'package:flutter_application_1/components/widgets/expense_card.dart';
+import 'package:flutter_application_1/service/helper/update_expense.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../theme/colors.dart';
@@ -22,7 +23,9 @@ class ExpensesView extends StatefulWidget {
 
 class _ExpensesViewState extends State<ExpensesView> {
   bool initialLoading = true;
+  bool isRecurring = false;
   List<Map<String, dynamic>> expenses = [];
+  List<Map<String, dynamic>> recurringExpenses = [];
   ExpensesBloc expensesBloc = ExpensesBloc();
 
   @override
@@ -42,6 +45,7 @@ class _ExpensesViewState extends State<ExpensesView> {
         if (state is ExpensesLoadedState) {
           initialLoading = false;
           expenses = state.expenses;
+          recurringExpenses = state.recurringExpenses;
         }
         if (state is ExpensesErrorState) {
           initialLoading = false;
@@ -63,12 +67,39 @@ class _ExpensesViewState extends State<ExpensesView> {
           backgroundColor: bgColor,
           appBar: AppBar(
             backgroundColor: bgColor,
+            forceMaterialTransparency: true,
             title: Text(
               "Expenses",
               style: AppStyles.setAppStyle(black, 20, FontWeight.bold, "black"),
             ),
-            centerTitle: true,
-            leading: SizedBox(),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Text(
+                            "The below displayed expenses are considered as recurring expenses. Please verify them. You can simple add those by clicking on the check icon.",style: TextStyle(fontFamily: "medium"),),
+                      ),
+                      RecurringExpensesWidget(initialExpenses: recurringExpenses,),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Continue"),
+                      )
+                    ],
+                  );
+                });
+                },
+                icon: Icon(Icons.info,color: primary,),
+              )
+            ],
+            leading: Icon(Icons.money, color: black),
           ),
           floatingActionButton:
               Column(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -173,7 +204,9 @@ class _ExpensesViewState extends State<ExpensesView> {
                     builder: (BuildContext context) {
                       return Padding(
                         padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom, // Moves content up
+                          bottom: MediaQuery.of(context)
+                              .viewInsets
+                              .bottom, // Moves content up
                         ),
                         child: ChatBotBottomSheet(expensesBloc: expensesBloc),
                       );
@@ -344,10 +377,13 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
                           selected: selectedChip == label,
                           label: Text(label),
                           labelStyle: TextStyle(
-                            fontWeight: selectedChip == label ? FontWeight.bold : FontWeight.normal,
+                            fontWeight: selectedChip == label
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                           backgroundColor: Colors.grey.shade200,
-                          selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                          selectedColor:
+                              Theme.of(context).primaryColor.withOpacity(0.2),
                           onSelected: (value) {
                             setState(() {
                               if (selectedChip == label) {
@@ -365,7 +401,8 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
                             });
 
                             widget.expensesBloc.add(
-                                ExpenseChoiceShipSelectedEvent(selectedChip ?? ""));
+                                ExpenseChoiceShipSelectedEvent(
+                                    selectedChip ?? ""));
                           },
                         ),
                       );
@@ -425,7 +462,8 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
                               fontFamily: "medium",
                               color: Colors.grey.shade500,
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
                             border: InputBorder.none,
                           ),
                           maxLines: null,
@@ -439,7 +477,8 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
                           onTap: () {
                             if (_controller.text.isNotEmpty) {
                               // Send message to bloc and wait for response
-                              widget.expensesBloc.add(ExpensechatBotEvent(_controller.text));
+                              widget.expensesBloc
+                                  .add(ExpensechatBotEvent(_controller.text));
                               // Controller will be cleared after response is received
                             }
                           },
@@ -482,14 +521,16 @@ class ChatBubble extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
-        mainAxisAlignment: isFromBot ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment:
+            isFromBot ? MainAxisAlignment.start : MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (isFromBot)
             Container(
               margin: const EdgeInsets.only(right: 8),
               child: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                backgroundColor:
+                    Theme.of(context).primaryColor.withOpacity(0.2),
                 radius: 16,
                 child: Icon(
                   Icons.android,
@@ -527,3 +568,65 @@ class ChatBubble extends StatelessWidget {
     );
   }
 }
+
+class RecurringExpensesWidget extends StatefulWidget {
+  final List<Map<String, dynamic>> initialExpenses;
+
+  const RecurringExpensesWidget({Key? key, required this.initialExpenses}) : super(key: key);
+
+  @override
+  _RecurringExpensesWidgetState createState() => _RecurringExpensesWidgetState();
+}
+
+class _RecurringExpensesWidgetState extends State<RecurringExpensesWidget> {
+  late List<Map<String, dynamic>> recurringExpenses;
+
+  @override
+  void initState() {
+    super.initState();
+    recurringExpenses = List.from(widget.initialExpenses);
+  }
+
+  void removeItem(int index, bool canSend) {
+    if (index >= 0 && index < recurringExpenses.length) {
+      createExpense(recurringExpenses[index]);
+      setState(() {
+        recurringExpenses.removeAt(index);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: recurringExpenses.asMap().entries.map((entry) {
+        int index = entry.key;
+        Map<String, dynamic> expense = entry.value;
+        return Card(
+          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: ListTile(
+            title: Text(
+              expense['expense_title'],
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            subtitle: Text("Amount: ${expense['amount_spent']}"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.check_circle, color: Colors.green),
+                  onPressed: () => removeItem(index,true),
+                ),
+                IconButton(
+                  icon: Icon(Icons.cancel, color: Colors.red),
+                  onPressed: () => removeItem(index,false),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
