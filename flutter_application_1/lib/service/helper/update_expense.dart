@@ -1,0 +1,45 @@
+import "dart:convert";
+
+import "package:flutter_application_1/data/appvalues.dart";
+import "package:http/http.dart" as http;
+
+
+Future<bool> updateExpense(Map<String,dynamic> expense) async {
+  try {
+    String uuid = expense["uuid"];
+    expense.remove("uuid");
+    var request = await http.put(
+        Uri.parse("${AppValues.ip}updateExpense/$uuid"),
+      body: jsonEncode(expense),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    );
+    if (request.statusCode == 200) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    print("Error on update expense : $e");
+    return false;
+  }
+}
+
+Future<bool> createExpense(Map<String,dynamic> expense) async {
+  try {
+    var request = await http.post(
+        Uri.parse("${AppValues.ip}/addExpense"),
+      body: jsonEncode(expense),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    );
+    if (request.statusCode == 200) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    print("Error on create expense : $e");
+    return false;
+  }
+}

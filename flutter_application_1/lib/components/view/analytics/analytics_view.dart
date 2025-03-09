@@ -71,6 +71,33 @@ class _AnalyticsViewState extends State<AnalyticsView>
         forceMaterialTransparency: true,
         leading: SizedBox(),
       ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          // showModalBottomSheet(
+          //     context: context,
+          //     useSafeArea: true,
+          //     isScrollControlled: true,
+          //     builder: (BuildContext context) {
+          //       return Padding(
+          //         padding: EdgeInsets.only(
+          //           bottom: MediaQuery.of(context).viewInsets.bottom, // Moves content up
+          //         ),
+          //         child: ChatBotBottomSheet(expensesBloc: expensesBloc),
+          //       );
+          //     });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: white,
+          shape:
+          CircleBorder(side: BorderSide(color: border, width: 0.5)),
+          minimumSize: const Size(50, 50),
+        ),
+        child: Icon(
+          Icons.star,
+          size: 35,
+          color: Colors.green,
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<AnalyticsBlocBloc, AnalyticsBlocState>(

@@ -10,3 +10,15 @@ class AnalyticsMonthSelectedEvent extends AnalyticsBlocEvent {
 
   AnalyticsMonthSelectedEvent(this.monthIndex);
 }
+
+class SendAnalyticsQueryEvent extends AnalyticsBlocEvent {
+  final String query;
+
+  SendAnalyticsQueryEvent(this.query);
+}
+
+class SelectAnalyticsChipEvent extends AnalyticsBlocEvent {
+  final String chipName;
+
+  SelectAnalyticsChipEvent(this.chipName);
+}
