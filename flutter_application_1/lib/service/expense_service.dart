@@ -58,17 +58,24 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
 }
 
 
-Future<List<Map<String,dynamic>>> getExpenses() async {
+Future<dynamic> getExpenses() async {
     try{
       List<Map<String,dynamic>> expenses = [];
+      List<Map<String,dynamic>> recurringExpenses = [];
       var response = await http.get(Uri.parse("${AppValues.ip}getExpense"));
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
+        for(var expense in data["data"]){
+            recurringExpenses.add(expense);
+        }
         for(var expense in data["message"]){
           expenses.add(expense);
         }
         print("Success: $expenses");
-        return expenses;
+        return {
+          "expenses": expenses,
+          "recurringExpenses": recurringExpenses
+        };
       }
     }
     catch(e){
