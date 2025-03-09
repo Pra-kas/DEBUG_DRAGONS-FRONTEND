@@ -13,6 +13,9 @@ Future<String> uploadBill(XFile image) async {
     print("The string is $base64String");
     var response = await http.post(
       Uri.parse("${AppValues.ip}addExpenseByBill"),
+      headers: {
+        "Authorization" : AppValues.jwtToken
+      },
       body: {"image64": base64String},
     );
     if (response.statusCode == 200) {
@@ -37,6 +40,7 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
     );
     request.headers.addAll({
       "Content-Type": "multipart/form-data",
+      "Authorization" : AppValues.jwtToken
     });
     File file = File(pdf.files.single.path!);
     request.files.add(await http.MultipartFile.fromPath(
@@ -61,7 +65,13 @@ Future<String> uploadPdf(FilePickerResult pdf) async {
 Future<List<Map<String,dynamic>>> getExpenses() async {
     try{
       List<Map<String,dynamic>> expenses = [];
-      var response = await http.get(Uri.parse("${AppValues.ip}getExpense"));
+      var response = await http.get(
+          Uri.parse("${AppValues.ip}getExpense"),
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization" : AppValues.jwtToken
+        }
+      );
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
         for(var expense in data["message"]){

@@ -93,7 +93,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
   builder: (context, state) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: ListView(
         children: [
           textFieldForCreateScreen("Expense Title", expenseTitleController),
           textFieldForCreateScreen("Merchant Name", merchantNameController),
@@ -149,7 +149,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                 Map<String,dynamic> expenseData = widget.isEdit ? {
                   "expense_title": expenseTitleController.text,
                   "merchant_name": merchantNameController.text,
-                  "amount_spent": double.parse(totalAmountController.text),
+                  "amount_spent": -double.parse(totalAmountController.text),
                   "payment_method": paymentMethodController.text,
                   "date_time": dateController.text.trim(),
                   "category": selectedCategory,
@@ -158,7 +158,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
                 } : {
                   "expense_title": expenseTitleController.text,
                   "merchant_name": merchantNameController.text,
-                  "amount_spent": double.parse(totalAmountController.text),
+                  "amount_spent": -double.parse(totalAmountController.text),
                   "payment_method": paymentMethodController.text,
                   "date_time": dateController.text.trim(),
                   "category": selectedCategory,

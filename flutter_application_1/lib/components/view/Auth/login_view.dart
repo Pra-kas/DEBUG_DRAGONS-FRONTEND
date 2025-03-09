@@ -218,6 +218,7 @@ class LoginPage extends StatelessWidget {
       );
       await FirebaseAuth.instance.signInWithCredential(credential);
       String? jwtToken = await FirebaseAuth.instance.currentUser?.getIdToken();
+      print("JWT token : $jwtToken");
       if (jwtToken == null) {
         throw Exception('Failed to get JWT token');
       }

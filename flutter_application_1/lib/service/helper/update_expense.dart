@@ -13,6 +13,7 @@ Future<bool> updateExpense(Map<String,dynamic> expense) async {
       body: jsonEncode(expense),
       headers: {
         "Content-Type": "application/json",
+        "Authorization" : AppValues.jwtToken
       }
     );
     if (request.statusCode == 200) {
@@ -28,10 +29,11 @@ Future<bool> updateExpense(Map<String,dynamic> expense) async {
 Future<bool> createExpense(Map<String,dynamic> expense) async {
   try {
     var request = await http.post(
-        Uri.parse("${AppValues.ip}/addExpense"),
+        Uri.parse("${AppValues.ip}addExpense"),
       body: jsonEncode(expense),
       headers: {
         "Content-Type": "application/json",
+        "Authorization" : AppValues.jwtToken
       }
     );
     if (request.statusCode == 200) {
@@ -40,6 +42,26 @@ Future<bool> createExpense(Map<String,dynamic> expense) async {
     return false;
   } catch (e) {
     print("Error on create expense : $e");
+    return false;
+  }
+}
+
+Future<bool> addIncome(Map<String,dynamic> income) async {
+  try {
+    var request = await http.post(
+        Uri.parse("${AppValues.ip}/addExpense"),
+      body: jsonEncode(income),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization" : AppValues.jwtToken
+      }
+    );
+    if (request.statusCode == 200) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    print("Error on add income : $e");
     return false;
   }
 }
