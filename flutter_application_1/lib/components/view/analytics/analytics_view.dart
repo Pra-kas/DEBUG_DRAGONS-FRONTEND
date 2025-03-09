@@ -68,9 +68,8 @@ class _AnalyticsViewState extends State<AnalyticsView>
           'Analytics',
           style: AppStyles.setAppStyle(black, 20, FontWeight.bold, 'black'),
         ),
-        centerTitle: true,
         forceMaterialTransparency: true,
-        leading: SizedBox(),
+        leading: Icon(Icons.analytics_outlined),
       ),
       floatingActionButton: ElevatedButton(
         onPressed: () {
