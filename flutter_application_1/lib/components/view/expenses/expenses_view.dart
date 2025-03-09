@@ -224,6 +224,7 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
   String? selectedChip;
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
+  final messages = [];
 
   @override
   void dispose() {
