@@ -99,6 +99,9 @@ Future<String> getChatBotResponse(String message) async {
   try {
     var response = await http.post(
       Uri.parse("${AppValues.ip}botQuery"),
+      headers: {
+        "Authorization" : "Bearer ${AppValues.jwtToken}"
+      },
       body: {"botQuery": message},
     );
     var decodedResponse = jsonDecode(response.body);

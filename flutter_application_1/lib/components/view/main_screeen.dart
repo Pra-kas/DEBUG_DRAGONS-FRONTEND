@@ -61,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print("Has permission");
       // do api call to backend to create FCM
-      // await sendFCM(); // enabled after the backend implemetation.
+       await sendFCM(); // enabled after the backend implemetation.
     } else {
 
     }
