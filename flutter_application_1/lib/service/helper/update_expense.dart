@@ -50,7 +50,7 @@ Future<bool> createExpense(Map<String,dynamic> expense) async {
 Future<bool> addIncome(Map<String,dynamic> income) async {
   try {
     var request = await http.post(
-        Uri.parse("${AppValues.ip}/addExpense"),
+        Uri.parse("${AppValues.ip}addExpense"),
       body: jsonEncode(income),
       headers: {
         "Content-Type": "application/json",
