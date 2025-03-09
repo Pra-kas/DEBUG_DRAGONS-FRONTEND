@@ -7,3 +7,8 @@ class EditExpenseSaveEvent extends EditExpenseEvent {
   bool isEdit;
   EditExpenseSaveEvent({required this.expense, required this.isEdit});
 }
+
+class AddIncomeSaveEvent extends EditExpenseEvent {
+  final Map<String,dynamic> income;
+  AddIncomeSaveEvent({required this.income});
+}

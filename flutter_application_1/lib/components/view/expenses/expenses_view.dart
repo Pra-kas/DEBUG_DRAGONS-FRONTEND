@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/models/expense_model.dart';
+import 'package:flutter_application_1/components/view/expenses/add_income.dart';
 import 'package:flutter_application_1/components/view/expenses/edit_expenses.dart';
 import 'package:flutter_application_1/components/widgets/expense_card.dart';
 import 'package:flutter_application_1/service/helper/update_expense.dart';
@@ -113,11 +114,24 @@ class _ExpensesViewState extends State<ExpensesView> {
                           ListTile(
                             title: Center(
                                 child: Text(
+                                  "Add Income",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontFamily: "medium"),
+                                )),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => AddIncome()));
+                            },
+                          ),
+                          ListTile(
+                            title: Center(
+                                child: Text(
                               "Add Expense",
                               style: TextStyle(
                                   color: Colors.grey, fontFamily: "medium"),
                             )),
                             onTap: () {
+                              Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -125,6 +139,7 @@ class _ExpensesViewState extends State<ExpensesView> {
                                             expenseData: {},
                                             isEdit: false,
                                           )));
+
                             },
                           ),
                           ListTile(
@@ -257,6 +272,7 @@ class _ChatBotBottomSheetState extends State<ChatBotBottomSheet> {
   String? selectedChip;
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
+  final messages = [];
 
   @override
   void dispose() {

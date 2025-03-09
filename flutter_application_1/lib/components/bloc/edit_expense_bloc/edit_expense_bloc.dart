@@ -11,6 +11,7 @@ part 'edit_expense_state.dart';
 class EditExpenseBloc extends Bloc<EditExpenseEvent, EditExpenseState> {
   EditExpenseBloc() : super(EditExpenseInitial()) {
     on<EditExpenseSaveEvent> (editExpenseSaveEvent);
+    on<AddIncomeSaveEvent> (addIncomeSaveEvent);
   }
 
   Future<void> editExpenseSaveEvent(EditExpenseSaveEvent event, Emitter<EditExpenseState> emit) async {
@@ -33,6 +34,17 @@ class EditExpenseBloc extends Bloc<EditExpenseEvent, EditExpenseState> {
       } else  {
         emit(EditExpenseErrorState());
       }
+    }
+  }
+
+  Future<void> addIncomeSaveEvent(AddIncomeSaveEvent event, Emitter<EditExpenseState> emit) async {
+    emit(EditExpenseSavingState());
+    Map<String,dynamic> incomeData = event.income;
+    bool isIncomeCreated = await addIncome(incomeData);
+    if (isIncomeCreated) {
+      emit(EditExpenseSavedState());
+    } else {
+      emit(EditExpenseErrorState());
     }
   }
 }
